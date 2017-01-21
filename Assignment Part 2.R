@@ -71,18 +71,29 @@ inspect(rules[1:5])
 #Visualization Rules
 plot(rules,method="graph",interactive=TRUE,shading=NA)
 
-#Show Top 10 lowest sales items
+#Data Virtualization
 as.integer(colSums(bakery != 0))
-qty<-as.integer(colSums(bakery != 0))
+qty <-as.integer(colSums(bakery != 0))
 items <- data.frame(food$V1,qty)
 colnames(items) <- c("ItemName","Qty")
 items <- items[with(items, order(qty)),]
-items <- head(items,10) #TOP 10
-#items <- head(items,) #TOP 5
+highsales.items <- tail(items,10) 
+lowsales.items <- head(items,10)
 
-act.graph <-ggplot(data=items, aes(x=reorder(ItemName,-Qty), y=Qty, fill=ItemName)) +
+#Top 10 Highest Sales Item
+high.graph <-ggplot(data=highsales.items, aes(x=reorder(ItemName,Qty), y=Qty, fill=ItemName)) +
   geom_bar(stat="identity") +
-  geom_text(aes(label=Qty), hjust=1.2, size=4) +
+  geom_text(aes(label=Qty), vjust=1.6, size=3) +
+  ggtitle("Top 10 Highest Sales") +
+  labs(x="ItemName",y="Qty") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+high.graph
+
+#Top 10 Lowest Sales Item
+low.graph <-ggplot(data=lowsales.items, aes(x=reorder(ItemName,Qty), y=Qty, fill=ItemName)) +
+  geom_bar(stat="identity") +
+  geom_text(aes(label=Qty), vjust=1.6, size=3) +
   ggtitle("Top 10 Lowest Sales") +
-  labs(x="ItemName",y="Qty")
-act.graph + coord_flip()
+  labs(x="ItemName",y="Qty") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+low.graph
